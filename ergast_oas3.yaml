@@ -400,6 +400,4 @@ paths:
       tags:
       - seasons
 servers:
-- description: SwaggerHub API Auto Mocking
-  url: https://virtserver.swaggerhub.com/sports/liam-f1/1
-- url: http://ergast.com/api/f1
+- url: http://ergast.com
