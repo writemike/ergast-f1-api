@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ergast-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ergast-db 
+  template:
+    metadata:
+      labels:
+        app: ergast-db 
+    spec:
+      containers:
+      - name: ergast-db 
+        image: writemike/ergast-f1-api:db
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: f1
+        - name: MYSQL_DATABASE
+          value: ergastdb
+        ports:
+        - containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ergastdb
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+    protocol: TCP
+    name: mysql
+  selector:
+    app: ergast-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ergast-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ergast-api
+  template:
+    metadata:
+      labels:
+        app: ergast-api
+    spec:
+      containers:
+      - name: ergast-api
+        image: writemike/ergast-f1-api:api
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ergast-api-svc
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: ergast-api
