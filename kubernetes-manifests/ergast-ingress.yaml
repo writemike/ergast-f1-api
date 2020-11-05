@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ergast-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    appprotect.f5.com/app-protect-policy: "default/oas-ref"
+    appprotect.f5.com/app-protect-enable: "True"
+    appprotect.f5.com/app-protect-security-log-enable: "True"
+    appprotect.f5.com/app-protect-security-log: "default/logconf"
+    appprotect.f5.com/app-protect-security-log-destination: "syslog:server=10.0.0.6:514"
+    #nginx.com/jwt-key: "cafe-jwk"
+    #nginx.com/jwt-realm: "Cafe App"
+    #nginx.com/jwt-login-url: "https://nginx.org"
+spec:
+  tls:
+  - hosts:
+    - f1.example.com
+    secretName: ergast-secret
+  rules:
+  - host: f1.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ergast-api-svc
+          servicePort: 80
+
